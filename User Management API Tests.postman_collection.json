@@ -1,0 +1,289 @@
+{
+  "info": {
+    "_postman_id": "e4674e2e-28d6-4ca2-afcf-8a32d1e83b3d",
+    "name": "User Management API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60155003",
+    "_collection_link": "https://go.postman.co/collection/60155003-e4674e2e-28d6-4ca2-afcf-8a32d1e83b3d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "item": [
+            {
+              "name": "Get Users",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response is an array\", function () {\r\n    const users = pm.response.json();\r\n    pm.expect(users).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"User list is not empty\", function () {\r\n    const users = pm.response.json();\r\n    pm.expect(users.length).to.be.above(0);\r\n})\r\n\r\npm.test(\"Each user has an id and name\", function () {\r\n    const users = pm.response.json();\r\n    users.forEach(function (user) {\r\n        pm.expect(user).to.have.property(\"id\");\r\n        pm.expect(user).to.have.property(\"name\");\r\n    });\r\n}); "
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Get User by ID",
+          "item": [
+            {
+              "name": "Get User by ID",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response contains user ID 1\", function () {\r\n    const user = pm.response.json(); \r\n    pm.expect(user.id).to.equal(1); \r\n});\r\n\r\npm.test(\"User has required fields\", function () {\r\n    const user = pm.response.json();\r\n    \r\n    pm.expect(user).to.have.property(\"name\");\r\n    pm.expect(user).to.have.property(\"email\");\r\n    pm.expect(user).to.have.property(\"username\");\r\n}); \r\n\r\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/users/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Create User",
+          "item": [
+            {
+              "name": "Create User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Created user has a name\", function () {\r\n    const user = pm.response.json();\r\n    pm.expect(user).to.have.property(\"name\"); \r\n});\r\n\r\npm.test(\"Created user name matches request\", function () {\r\n    const user = pm.response.json();\r\n    pm.expect(user.name).to.equal(\"Brian Cabingan\");\r\n});\r\n\r\nconst createdUser = pm.response.json();\r\n\r\npm.collectionVariables.set(\"createdUserID\", createdUser.id); \r\n\r\npm.test(\"Created user ID was saved\", function () {\r\n    pm.expect(pm.collectionVariables.get(\"createdUserID\")).to.exist;\r\n});\r\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Brian Cabingan\",\r\n  \"username\": \"brianc\",\r\n  \"email\": \"brian@example.com\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Update User",
+          "item": [
+            {
+              "name": "Update User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Updated name is returned\", function () {\r\n    const user = pm.response.json();\r\n    pm.expect(user.name).to.equal(\"Updated User\");\r\n});\r\n\r\npm.test(\"Update email is returned\", function () {\r\n    const user = pm.response.json();\r\n    pm.expect(user.email).to.equal(\"updated@example.com\");\r\n});\r\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Updated User\",\r\n  \"email\": \"updated@example.com\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Delete User",
+          "item": [
+            {
+              "name": "Delete User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response body is empty\", function () {\r\n    pm.expect(pm.response.text()).to.equal(\"{}\"); \r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/users/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Get Missing User",
+          "item": [
+            {
+              "name": "Get Missing User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Missing user returns 404\", function () {\r\n    pm.response.to.have.status(404); \r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/users/999999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "999999"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Create User with Invalid Data",
+          "item": [
+            {
+              "name": "Create User With Invalid Data",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Invalid user data returns client error\", function () {\r\n    pm.expect(pm.response.code).to.be.oneOf([201, 400, 402]); \r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"\",\r\n  \"email\": \"not-an-email\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "createdUserID",
+      "value": ""
+    }
+  ]
+}
